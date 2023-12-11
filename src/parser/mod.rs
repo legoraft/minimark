@@ -1,4 +1,3 @@
-use std::collections::hash_map::VacantEntry;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
@@ -45,7 +44,7 @@ pub fn parse(filename: &str) -> Vec<String> {
         tokens.push(line + "\n");
     }
 
-    tokens.push("\n</body>\n".to_string());
+    tokens.push("</body>\n".to_string());
     tokens.push("</html>".to_string());
 
     tokens
