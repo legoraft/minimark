@@ -16,13 +16,17 @@ pub fn parse(filename: &str) -> Vec<String> {
     for line in reader.lines() {
         let line_content = line.unwrap();
         let mut first_char: Vec<char> = line_content.chars().take(1).collect();
-        let mut output_line: String;
+        let output_line: String;
 
-        match first_char.pop().unwrap() {
-            '#' => output_line = heading::compile(&line_content),
-            '-' => output_line = list::compile(&line_content),
+        match first_char.pop() {
+            Some('#') => output_line = heading::compile(&line_content),
+            Some('-') => output_line = list::compile(&line_content),
             _ => output_line = paragraph::compile(&line_content),
         };
+
+        if output_line != "<p></p>\n" {
+            tokens.push(output_line);
+        }
     }
 
     tokens.push("\n</body>\n".to_string());
