@@ -3,8 +3,8 @@ use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 mod heading;
-mod bold;
 mod paragraph;
+mod list;
 
 pub fn parse(filename: &str) -> Vec<String> {
     let mut tokens: Vec<String> = vec!["<html>\n".to_string(), "<body>\n\n".to_string()];
@@ -20,6 +20,7 @@ pub fn parse(filename: &str) -> Vec<String> {
 
         match first_char.pop().unwrap() {
             '#' => output_line = heading::compile(&line_content),
+            '-' => output_line = list::compile(&line_content),
             _ => output_line = paragraph::compile(&line_content),
         };
     }
