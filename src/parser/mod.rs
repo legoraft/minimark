@@ -7,7 +7,6 @@ mod paragraph;
 mod list;
 
 pub fn parse(filename: &str) -> Vec<String> {
-    let mut tokens: Vec<String> = vec!["<html>\n".to_string(), "<body>\n\n".to_string()];
     let mut html_line = String::new();
 
     let input_filename = Path::new(filename);
@@ -37,7 +36,15 @@ pub fn parse(filename: &str) -> Vec<String> {
         html_line += &*output_line;
     }
 
-    html_line = html_line.replace("</ul>\n<ul>", "").replace("</ol>\n<ol>", "");
+    let tokens = format_file(html_line);
+
+    tokens
+}
+
+fn format_file(html_line: String) -> Vec<String> {
+    let mut tokens: Vec<String> = vec!["<html>\n".to_string(), "<body>\n\n".to_string()];
+
+    let html_line = html_line.replace("</ul>\n<ul>", "").replace("</ol>\n<ol>", "");
     let lines: Vec<String> = html_line.split("\n").map(|s| s.to_string()).collect();
 
     for line in lines {
