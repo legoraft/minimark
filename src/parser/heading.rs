@@ -1,4 +1,4 @@
-pub fn compile(line: String) -> String {
+pub fn compile(line: &String) -> String {
     let (tag, content) = line.split_once(" ").unwrap();
 
     let tag = format!("<h{0}> </h{0}>", tag.len() as i64);
