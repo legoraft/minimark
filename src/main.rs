@@ -20,7 +20,8 @@ fn compile_file(filename: &str) {
     let mut output_file = File::create(&output_filename)
         .expect("Error, could not create output file!");
 
-    for line in &tokens {
+    for line in tokens.iter() {
+        dbg!(&line);
         output_file.write_all(line.as_bytes()).expect("Error, failed to write line!");
     }
 }

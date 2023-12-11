@@ -1,9 +1,9 @@
 pub fn compile(line: &String) -> String {
     let (dot, content) = line.split_once(" ").unwrap();
     let list_type = if dot.chars().nth(0).unwrap().is_numeric() {
-        vec!["<ol>", "</ol>"]
+        vec!["<ol>\n", "</ol>"]
     } else {
-        vec!["<ul>", "</ul>"]
+        vec!["<ul>\n", "</ul>"]
     };
 
     let tags: Vec<&str> = vec!["<li>", "</li>"];

@@ -1,5 +1,6 @@
+use std::collections::hash_map::VacantEntry;
 use std::fs::File;
-use std::io::{BufRead, BufReader, empty};
+use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 mod heading;
@@ -8,6 +9,7 @@ mod list;
 
 pub fn parse(filename: &str) -> Vec<String> {
     let mut tokens: Vec<String> = vec!["<html>\n".to_string(), "<body>\n\n".to_string()];
+    let mut html_line = String::new();
 
     let input_filename = Path::new(filename);
     let file = File::open(input_filename).expect("Error, failed to read file!");
@@ -15,7 +17,7 @@ pub fn parse(filename: &str) -> Vec<String> {
 
     for line in reader.lines() {
         let line_content = line.unwrap();
-        let mut first_char: char = match line_content.chars().nth(0) {
+        let first_char: char = match line_content.chars().nth(0) {
             Some(c) => c,
             None => continue,
         };
@@ -33,9 +35,14 @@ pub fn parse(filename: &str) -> Vec<String> {
             },
         };
 
-        if output_line != "<p></p>\n" {
-            tokens.push(output_line);
-        }
+        html_line += &*output_line;
+    }
+
+    html_line = html_line.replace("</ul>\n<ul>", "").replace("</ol>\n<ol>", "");
+    let lines: Vec<String> = html_line.split("\n").map(|s| s.to_string()).collect();
+
+    for line in lines {
+        tokens.push(line + "\n");
     }
 
     tokens.push("\n</body>\n".to_string());
