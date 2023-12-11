@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, empty};
 use std::path::Path;
 
 mod heading;
@@ -15,13 +15,22 @@ pub fn parse(filename: &str) -> Vec<String> {
 
     for line in reader.lines() {
         let line_content = line.unwrap();
-        let mut first_char: Vec<char> = line_content.chars().take(1).collect();
+        let mut first_char: char = match line_content.chars().nth(0) {
+            Some(c) => c,
+            None => continue,
+        };
         let output_line: String;
 
-        match first_char.pop() {
-            Some('#') => output_line = heading::compile(&line_content),
-            Some('-') => output_line = list::compile(&line_content),
-            _ => output_line = paragraph::compile(&line_content),
+        match first_char {
+            '#' => output_line = heading::compile(&line_content),
+            '-' => output_line = list::compile(&line_content),
+            _ => output_line = {
+                if first_char.is_numeric() {
+                    list::compile(&line_content)
+                } else {
+                    paragraph::compile(&line_content)
+                }
+            },
         };
 
         if output_line != "<p></p>\n" {
